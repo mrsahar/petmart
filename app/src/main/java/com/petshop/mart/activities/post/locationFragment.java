@@ -54,20 +54,6 @@ public class locationFragment extends Fragment {
     String address;
 
 
-    LocationCallback locationCallback = new LocationCallback() {
-        @Override
-
-        public void onLocationResult(@NonNull LocationResult locationResult) {
-            for (Location location : locationResult.getLocations()) {
-                String getLatlong = "Your Location \n" + location.getLatitude() + " " + location.getLongitude();
-                liveLat = location.getLatitude();
-                liveLong = location.getLongitude();
-                Log.d("kiki", "onLocationResult: " + getLatlong);
-
-            }
-        }
-    };
-
 
     public locationFragment() {
         // Required empty public constructor
@@ -124,7 +110,7 @@ public class locationFragment extends Fragment {
                     }
                 });
                 checkSettingAndStartLocationUpdate();
-                startLocationUpdate();
+
 
                 try {
                     if (addresses.size() > 0){
@@ -153,7 +139,7 @@ public class locationFragment extends Fragment {
         locationSettingsRequestTask.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
             @Override
             public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                startLocationUpdate();
+             // location code here
 
             }
         });
@@ -176,16 +162,6 @@ public class locationFragment extends Fragment {
         });
     }
 
-    //Start location update 83
-    @SuppressLint("MissingPermission")
-
-    private void startLocationUpdate() {
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-    }     //Stop location update 89
-
-    private void stopLocationUpdate() {
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-    }
 
     @Override
     public void onResume() {

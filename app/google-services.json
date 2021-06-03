@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "471624856526",
+    "project_id": "pet-mart-19e46",
+    "storage_bucket": "pet-mart-19e46.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471624856526:android:c60fa9cb65edf6a154319f",
+        "android_client_info": {
+          "package_name": "com.petshop.mart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "471624856526-1kp1bct893hled30iscduee55fasppsq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTiPX6SP8cKUle6Fr0PFSRs2ajGRUCDRg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "471624856526-1kp1bct893hled30iscduee55fasppsq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

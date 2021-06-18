@@ -2,7 +2,6 @@ package com.petshop.mart.activities.post;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -12,6 +11,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Looper;
@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -36,7 +37,6 @@ import com.google.android.gms.tasks.Task;
 import com.petshop.mart.R;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,18 +46,32 @@ public class locationFragment extends Fragment {
     private static final String TAG = "kiki";
     //Location in english
     Geocoder geocoder;
-    List<Address> addresses;
 
+    List<Address> addresses;
     Double liveLat, liveLong;
+    int LOCATION_REQUEST_CODE = 10001;
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
+
+    LocationCallback locationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            if (locationResult == null) {
+                return;
+            }
+            for(Location location: locationResult.getLocations()) {
+                liveLat = location.getLatitude();
+                liveLong = location.getLongitude();
+                try {
+                    Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                    addresses = geocoder.getFromLocation(liveLat, liveLong, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
     String address;
-
-
-
-    public locationFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,95 +81,64 @@ public class locationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the layout for getContext() fragment
         View v = inflater.inflate(R.layout.fragment_location, container, false);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(4000);
+        locationRequest.setFastestInterval(2000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        checkSettingsAndStartLocationUpdates();
         ImageButton imgBtnLocation = v.findViewById(R.id.search_location);
+        TextView txtLocation = v.findViewById(R.id.txt_ads_Location);
         geocoder = new Geocoder(getContext(), Locale.getDefault());
-        addresses = new ArrayList<>();
 
-         address = "none";
-        try {
-            if (addresses.size() > 0){
-                addresses = geocoder.getFromLocation(liveLat, liveLong, 1);
-                address = addresses.get(0).getAddressLine(0);}
-            else{
-                Log.d(TAG, "not running Fuis: ");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        imgBtnLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-
-                }
-                fusedLocationProviderClient.getLastLocation().addOnSuccessListener((Activity) getContext(), new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        liveLat = location.getLatitude();
-                        liveLong = location.getLongitude();
-                    }
-                });
-                checkSettingAndStartLocationUpdate();
-
-
-                try {
-                    if (addresses.size() > 0){
-                        addresses = geocoder.getFromLocation(liveLat, liveLong, 1);
-                        address = addresses.get(0).getAddressLine(0);}
-                    else{
-                        Log.d(TAG, "not running Fuis: ");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Log.d("kiki", "onClick: "+address);
-            }
+        imgBtnLocation.setOnClickListener(v1 -> {
+            address =  addresses.get(0).getAddressLine(0);
+            txtLocation.setText(address);
         });
-
 
         return v;
     }
 
-    //Checking for Location Setting
-    private void checkSettingAndStartLocationUpdate() {
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            checkSettingsAndStartLocationUpdates();
+        } else {
+            askLocationPermission();
+        }
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopLocationUpdates();
+    }
+    private void checkSettingsAndStartLocationUpdates() {
         LocationSettingsRequest request = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest).build();
-        SettingsClient client = LocationServices.getSettingsClient(getActivity());
-        Task<LocationSettingsResponse> locationSettingsRequestTask = client.checkLocationSettings(request);
-        locationSettingsRequestTask.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
+        SettingsClient client = LocationServices.getSettingsClient(getContext());
+
+        Task<LocationSettingsResponse> locationSettingsResponseTask = client.checkLocationSettings(request);
+        locationSettingsResponseTask.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
             @Override
             public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-             // location code here
-
+                startLocationUpdates();
             }
         });
-        locationSettingsRequestTask.addOnFailureListener(new OnFailureListener() {
+        locationSettingsResponseTask.addOnFailureListener(new OnFailureListener() {
             @Override
-
             public void onFailure(@NonNull Exception e) {
                 if (e instanceof ResolvableApiException) {
                     ResolvableApiException apiException = (ResolvableApiException) e;
                     try {
-                        apiException.startResolutionForResult(getActivity(), 1005);
-
-                    } catch (
-                            IntentSender.SendIntentException sendIntentException) {
-                        sendIntentException.printStackTrace();
-
+                        apiException.startResolutionForResult(getActivity(), 1001);
+                    } catch (IntentSender.SendIntentException ex) {
+                        ex.printStackTrace();
                     }
                 }
             }
@@ -163,9 +146,32 @@ public class locationFragment extends Fragment {
     }
 
 
+    @SuppressLint("MissingPermission")
+    private void startLocationUpdates() {
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
+    private void stopLocationUpdates() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    }
+
+    private void askLocationPermission() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Log.d(TAG, "askLocationPermission: you should show an alert dialog...");
+            }
+            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+        }
+    }
+
     @Override
-    public void onResume() {
-        super.onResume();
-        checkSettingAndStartLocationUpdate();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkSettingsAndStartLocationUpdates();
+            } else {
+                //Permission not granted
+            }
+        }
     }
 }

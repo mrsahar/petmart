@@ -36,17 +36,9 @@ public class imageloadingFragment extends Fragment {
     ImageView adsImg;
     Boolean isUploaded = false;
 
-
-    public imageloadingFragment() {
-        // Required empty public constructor
-    }
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -61,13 +53,9 @@ public class imageloadingFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         SharePreUserManage sharePreUserManage = new SharePreUserManage(getContext());
         String adsId = db.collection("ads").document().getId();
-
-
         Button btnUploadAdsImage;
-
         adsImg = v.findViewById(R.id.ads_img);
         btnUploadAdsImage = v.findViewById(R.id.btn_upload_ads);
-
         adsImg.setOnClickListener(v1 -> {
             Intent i = new Intent();
                 i.setType("image/*");
@@ -75,46 +63,38 @@ public class imageloadingFragment extends Fragment {
                 startActivityForResult(Intent.createChooser(i, "Complete action using"), 1);
         });
 
-
         btnUploadAdsImage.setOnClickListener(v2 ->{
             if(isUploaded){
-                UploadTask uploadTask = storageRef.child(adsId).child(uri.getLastPathSegment()).putFile(uri);
-                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                StorageReference imgPath = storageRef.child("image/");
+                imgPath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(getContext(), "jan chuti", Toast.LENGTH_SHORT).show();
                         FragmentManager fm = getActivity().getSupportFragmentManager();
                         locationFragment cf = new locationFragment();
                         FragmentTransaction ft = fm.beginTransaction();
                         ft.replace(R.id.main_frame,cf).commit();
-                        Toast.makeText(getContext(), "Thi Giywa Wayyy", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), "Something went Wrong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "kafa shafa ni tivra", Toast.LENGTH_SHORT).show();
                     }
                 });
+
             }else {
-                //TODO fragment need to remove from here
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                locationFragment cf = new locationFragment();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.main_frame,cf).commit();
                 Toast.makeText(getContext(), "Please Select Image first", Toast.LENGTH_SHORT).show();
             }
         });
-
-
         return v;
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && data != null) {
+        if (requestCode == 1 && data.getData() != null) {
             isUploaded  = true;
-            uri = Uri.fromFile(new File(data.getData().getPath()));
+            uri = data.getData();
             adsImg.setImageURI(uri);
         } else {
             Toast.makeText(getContext(), "kafa shafa ni tivra", Toast.LENGTH_SHORT).show();

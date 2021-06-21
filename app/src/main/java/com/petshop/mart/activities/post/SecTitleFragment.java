@@ -33,10 +33,6 @@ public class SecTitleFragment extends Fragment {
     ArrayList<String> categoryData;
     ArrayAdapter<String> spinnerAdapter;
 
-    public SecTitleFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

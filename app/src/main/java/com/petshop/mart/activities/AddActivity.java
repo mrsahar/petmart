@@ -1,43 +1,17 @@
 package com.petshop.mart.activities;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.petshop.mart.R;
 import com.petshop.mart.activities.post.FirstCategoryFragment;
 
-import java.util.List;
-
 public class AddActivity extends AppCompatActivity {
 
-    private static final String TAG = "kiki";
 
-    EditText txtTitle, txtDescription, txtPrice, txtPhone_no, txtLocation, txtAnimal, txtFish, txtBird;
-    ImageButton search;
-    Button btnNext0, btnNext1, btnNext3, btnNext2;
-    FrameLayout frame0, frame1, frame2, frame3;
-    ImageView userImgUpload;
-    ProgressBar progressBar;
-    String getCategoryName;
-    AppCompatSpinner spinnerTypeCategory;
-    List<String> categoryData;
-    String title, description, category;
-    int price;
-    Double phoneNo;
-    FirebaseFirestore db;
-    Uri uri;
     static Bundle b;
 
     @Override

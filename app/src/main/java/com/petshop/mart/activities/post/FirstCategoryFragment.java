@@ -10,15 +10,13 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.petshop.mart.R;
 
-public class CategoryFragment extends Fragment {
+public class FirstCategoryFragment extends Fragment {
     String category = null;
-
-    public CategoryFragment() {
-        // Required empty public constructor
-    }
+    Bundle b = new Bundle();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,18 +31,34 @@ public class CategoryFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_category, container, false);
 
         CardView cvAnimal = v.findViewById(R.id.cv_animals);
-
+        CardView cvBird = v.findViewById(R.id.cv_0);
+        CardView cvFish = v.findViewById(R.id.cv_animals);
 
         cvAnimal.setOnClickListener(v1 -> {
-            category = "Animal";
-            Bundle bundle = new Bundle();
+            category = "Animals";
+            runFragment();
+        });
+        cvBird.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                category = "Birds";
+                runFragment();
+            }
+        });
+
+        return v;
+    }
+
+    public void runFragment(){
+        if (category != null ){
             FragmentManager fm = getActivity().getSupportFragmentManager();
-            titleFragment tf = new titleFragment();
-            bundle.putString("category",category);
-            tf.setArguments(bundle);
+            SecTitleFragment tf = new SecTitleFragment();
+            b.putString("category",category);
+            tf.setArguments(b);
             FragmentTransaction ft = fm.beginTransaction();
             ft.replace(R.id.main_frame,tf).commit();
-        });
-        return v;
+        }else{
+            Toast.makeText(getContext(), "Please select category", Toast.LENGTH_SHORT).show();
+        }
     }
 }

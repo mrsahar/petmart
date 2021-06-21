@@ -24,13 +24,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.petshop.mart.R;
-import com.petshop.mart.activities.AddActivity;
 import com.petshop.mart.localdata.SharePreUserManage;
 
-import java.io.File;
 
-
-public class imageloadingFragment extends Fragment {
+public class ThirdImageLoadingFragment extends Fragment {
 
     Uri uri;
     ImageView adsImg;
@@ -71,7 +68,7 @@ public class imageloadingFragment extends Fragment {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Toast.makeText(getContext(), "jan chuti", Toast.LENGTH_SHORT).show();
                         FragmentManager fm = getActivity().getSupportFragmentManager();
-                        locationFragment cf = new locationFragment();
+                        LastLocationFragment cf = new LastLocationFragment();
                         FragmentTransaction ft = fm.beginTransaction();
                         ft.replace(R.id.main_frame,cf).commit();
                     }

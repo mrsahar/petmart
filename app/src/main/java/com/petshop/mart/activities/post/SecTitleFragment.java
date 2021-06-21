@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class titleFragment extends Fragment {
+public class SecTitleFragment extends Fragment {
 
     private static final String TAG = "kiki";
     String typeCategory = null;
@@ -33,7 +33,7 @@ public class titleFragment extends Fragment {
     ArrayList<String> categoryData;
     ArrayAdapter<String> spinnerAdapter;
 
-    public titleFragment() {
+    public SecTitleFragment() {
         // Required empty public constructor
     }
 
@@ -45,7 +45,7 @@ public class titleFragment extends Fragment {
         }else{
             Toast.makeText(getContext(), "Please Select Category", Toast.LENGTH_SHORT).show();
             FragmentManager fm = getActivity().getSupportFragmentManager();
-            CategoryFragment cf = new CategoryFragment();
+            FirstCategoryFragment cf = new FirstCategoryFragment();
             FragmentTransaction ft = fm.beginTransaction();
             ft.replace(R.id.main_frame,cf).commit();
             typeCategory = "fish";
@@ -91,7 +91,7 @@ public class titleFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                imageloadingFragment cf = new imageloadingFragment();
+                ThirdImageLoadingFragment cf = new ThirdImageLoadingFragment();
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.replace(R.id.main_frame,cf).commit();
             }

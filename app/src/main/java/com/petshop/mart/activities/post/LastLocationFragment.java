@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class locationFragment extends Fragment {
+public class LastLocationFragment extends Fragment {
 
     private static final String TAG = "kiki";
     //Location in english
@@ -89,7 +89,7 @@ public class locationFragment extends Fragment {
         locationRequest = LocationRequest.create();
         locationRequest.setInterval(4000);
         locationRequest.setFastestInterval(2000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         checkSettingsAndStartLocationUpdates();
         ImageButton imgBtnLocation = v.findViewById(R.id.search_location);
         TextView txtLocation = v.findViewById(R.id.txt_ads_Location);

@@ -28,7 +28,6 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
-                android:onClick="animal"
                 android:id="@+id/cv_0"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
@@ -68,7 +67,6 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:onClick="fish"
                 android:id="@+id/cv_1"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
@@ -108,7 +106,6 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:onClick="bird"
                 android:id="@+id/cv_2"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"

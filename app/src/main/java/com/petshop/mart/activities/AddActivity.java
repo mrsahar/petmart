@@ -1,47 +1,24 @@
 package com.petshop.mart.activities;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.nabinbhandari.android.permissions.PermissionHandler;
-import com.nabinbhandari.android.permissions.Permissions;
 import com.petshop.mart.R;
-import com.petshop.mart.activities.post.CategoryFragment;
-import com.petshop.mart.localdata.SharePreUserManage;
+import com.petshop.mart.activities.post.FirstCategoryFragment;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class AddActivity extends AppCompatActivity {
 
@@ -61,6 +38,7 @@ public class AddActivity extends AppCompatActivity {
     Double phoneNo;
     FirebaseFirestore db;
     Uri uri;
+    static Bundle b;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +46,12 @@ public class AddActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add);
 
         FragmentManager fm = getSupportFragmentManager();
-        CategoryFragment cf = new CategoryFragment();
+        FirstCategoryFragment cf = new FirstCategoryFragment();
         FragmentTransaction ft = fm.beginTransaction();
 
         ft.add(R.id.main_frame,cf).commit();
+
+         b = new Bundle();
 
 
 //

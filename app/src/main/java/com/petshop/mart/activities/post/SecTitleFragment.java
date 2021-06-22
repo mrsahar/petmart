@@ -13,12 +13,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.petshop.mart.R;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -32,6 +35,7 @@ public class SecTitleFragment extends Fragment {
     FirebaseFirestore db;
     ArrayList<String> categoryData;
     ArrayAdapter<String> spinnerAdapter;
+    Bundle b;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +65,15 @@ public class SecTitleFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_title, container, false);
+
+        b = this.getArguments();
+        if(b != null){
+
+        }
         Spinner spinner = v.findViewById(R.id.spinner_type_category);
+        TextView txtTitle = v.findViewById(R.id.txt_ads_title);
+        TextView txtDescription = v.findViewById(R.id.txt_ads_description);
+        TextView txtPrice = v.findViewById(R.id.txt_ads_price);
 
         Log.d(TAG, "onCreateView: Running");
         DocumentReference docRef = db.collection("category").document(typeCategory);
@@ -88,6 +100,10 @@ public class SecTitleFragment extends Fragment {
             public void onClick(View v) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 ThirdImageLoadingFragment cf = new ThirdImageLoadingFragment();
+                b.putString("txtType", spinner.getSelectedItem().toString());
+                b.putString("txtTitle", txtTitle.getText().toString());
+                b.putString("txtDescription", txtDescription.getText().toString());
+                b.putString("txtPrice", txtPrice.getText().toString());
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.replace(R.id.main_frame,cf).commit();
             }

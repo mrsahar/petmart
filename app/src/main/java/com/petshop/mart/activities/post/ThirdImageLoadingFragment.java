@@ -32,6 +32,7 @@ public class ThirdImageLoadingFragment extends Fragment {
     Uri uri;
     ImageView adsImg;
     Boolean isUploaded = false;
+    Bundle b = new Bundle();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,11 @@ public class ThirdImageLoadingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_imageloading, container, false);
+
+        b = this.getArguments();
+        if(b != null){
+
+        }
         //fireStore
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
@@ -69,6 +75,7 @@ public class ThirdImageLoadingFragment extends Fragment {
                         Toast.makeText(getContext(), "jan chuti", Toast.LENGTH_SHORT).show();
                         FragmentManager fm = getActivity().getSupportFragmentManager();
                         LastLocationFragment cf = new LastLocationFragment();
+                        b.putString("txtImage", taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
                         FragmentTransaction ft = fm.beginTransaction();
                         ft.replace(R.id.main_frame,cf).commit();
                     }

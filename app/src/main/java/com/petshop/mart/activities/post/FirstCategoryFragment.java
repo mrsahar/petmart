@@ -18,6 +18,7 @@ public class FirstCategoryFragment extends Fragment {
     String category = null;
     Bundle b = new Bundle();
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

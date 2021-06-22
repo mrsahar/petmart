@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Looper;
 import android.util.Log;
@@ -59,7 +61,7 @@ public class LastLocationFragment extends Fragment {
             if (locationResult == null) {
                 return;
             }
-            for(Location location: locationResult.getLocations()) {
+            for (Location location : locationResult.getLocations()) {
                 liveLat = location.getLatitude();
                 liveLong = location.getLongitude();
                 try {
@@ -83,7 +85,11 @@ public class LastLocationFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for getContext() fragment
         View v = inflater.inflate(R.layout.fragment_location, container, false);
+        Bundle b;
+        b = this.getArguments();
+        if(b != null){
 
+        }
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
         locationRequest = LocationRequest.create();
@@ -96,8 +102,28 @@ public class LastLocationFragment extends Fragment {
         geocoder = new Geocoder(getContext(), Locale.getDefault());
 
         imgBtnLocation.setOnClickListener(v1 -> {
-            address =  addresses.get(0).getAddressLine(0);
+            address = addresses.get(0).getAddressLine(0);
             txtLocation.setText(address);
+        });
+
+        TextView txtPhone = v.findViewById(R.id.txt_ads_phone);
+        TextView btnNext3 = v.findViewById(R.id.next_3);
+
+        btnNext3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (txtLocation != null || txtPhone != null ||
+                        txtLocation.getText().toString() != "" ||
+                        txtPhone.getText().toString() != "") {
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    SecTitleFragment tf = new SecTitleFragment();
+                    b.putString("txtPhone", txtPhone.getText().toString());
+                    b.putString("txtlocation", txtLocation.getText().toString());
+                    tf.setArguments(b);
+                    FragmentTransaction ft = fm.beginTransaction();
+                    ft.replace(R.id.main_frame, tf).commit();
+                }
+            }
         });
 
         return v;
@@ -113,11 +139,13 @@ public class LastLocationFragment extends Fragment {
             askLocationPermission();
         }
     }
+
     @Override
     public void onStop() {
         super.onStop();
         stopLocationUpdates();
     }
+
     private void checkSettingsAndStartLocationUpdates() {
         LocationSettingsRequest request = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest).build();
@@ -160,14 +188,14 @@ public class LastLocationFragment extends Fragment {
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
                 Log.d(TAG, "askLocationPermission: you should show an alert dialog...");
             }
-            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_REQUEST_CODE) {
-            if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 checkSettingsAndStartLocationUpdates();
             } else {
                 //Permission not granted

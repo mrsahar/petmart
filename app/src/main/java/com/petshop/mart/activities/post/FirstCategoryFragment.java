@@ -32,19 +32,10 @@ public class FirstCategoryFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_category, container, false);
 
         CardView cvAnimal = v.findViewById(R.id.cv_animals);
-        CardView cvBird = v.findViewById(R.id.cv_0);
-        CardView cvFish = v.findViewById(R.id.cv_animals);
 
         cvAnimal.setOnClickListener(v1 -> {
-            category = "Animals";
+            category = "Animal";
             runFragment();
-        });
-        cvBird.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                category = "Birds";
-                runFragment();
-            }
         });
 
         return v;

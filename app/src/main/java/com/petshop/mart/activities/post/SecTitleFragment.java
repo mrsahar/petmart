@@ -35,25 +35,24 @@ public class SecTitleFragment extends Fragment {
     FirebaseFirestore db;
     ArrayList<String> categoryData;
     ArrayAdapter<String> spinnerAdapter;
-    Bundle b;
+    Bundle b, b2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments().getString("category") != null){
-            typeCategory = getArguments().getString("category");
+        b = new Bundle();
+        typeCategory = getArguments().getString("category");
+        if(typeCategory != null){
+            b.putString("category",typeCategory);
         }else{
             Toast.makeText(getContext(), "Please Select Category", Toast.LENGTH_SHORT).show();
             FragmentManager fm = getActivity().getSupportFragmentManager();
             FirstCategoryFragment cf = new FirstCategoryFragment();
             FragmentTransaction ft = fm.beginTransaction();
             ft.replace(R.id.main_frame,cf).commit();
-            typeCategory = "fish";
         }
         categoryData = new ArrayList<>();
 
-        //fireStore
-        FirebaseStorage storage = FirebaseStorage.getInstance();
         db = FirebaseFirestore.getInstance();
 
 
@@ -66,10 +65,6 @@ public class SecTitleFragment extends Fragment {
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_title, container, false);
 
-        b = this.getArguments();
-        if(b != null){
-
-        }
         Spinner spinner = v.findViewById(R.id.spinner_type_category);
         TextView txtTitle = v.findViewById(R.id.txt_ads_title);
         TextView txtDescription = v.findViewById(R.id.txt_ads_description);
@@ -104,6 +99,7 @@ public class SecTitleFragment extends Fragment {
                 b.putString("txtTitle", txtTitle.getText().toString());
                 b.putString("txtDescription", txtDescription.getText().toString());
                 b.putString("txtPrice", txtPrice.getText().toString());
+                cf.setArguments(b);
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.replace(R.id.main_frame,cf).commit();
             }

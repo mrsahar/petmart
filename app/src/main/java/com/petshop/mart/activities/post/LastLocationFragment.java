@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -36,11 +37,15 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.petshop.mart.R;
+import com.petshop.mart.localdata.SharePreUserManage;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 
 public class LastLocationFragment extends Fragment {
@@ -48,12 +53,14 @@ public class LastLocationFragment extends Fragment {
     private static final String TAG = "kiki";
     //Location in english
     Geocoder geocoder;
-
+    Map<String, Object> userAds,inUserAds;
     List<Address> addresses;
     Double liveLat, liveLong;
     int LOCATION_REQUEST_CODE = 10001;
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
+    String userName;
+    Bundle b2;
 
     LocationCallback locationCallback = new LocationCallback() {
         @Override
@@ -78,6 +85,9 @@ public class LastLocationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userAds = new HashMap<>();
+        inUserAds = new HashMap<>();
+        b2 = getArguments();
     }
 
     @Override
@@ -85,11 +95,33 @@ public class LastLocationFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for getContext() fragment
         View v = inflater.inflate(R.layout.fragment_location, container, false);
-        Bundle b;
-        b = this.getArguments();
-        if(b != null){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        SharePreUserManage sharePreUserManage = new SharePreUserManage(getContext());
+        userName = sharePreUserManage.getUser().getUID();
+        String adsId = db.collection("ads").document().getId();
 
+
+        if(b2 != null){
+
+            //In user
+            inUserAds.put("ads_title", b2.getString("txtTitle"));
+            inUserAds.put("ads_img", b2.get("txtImage"));
+            inUserAds.put("ads_id", adsId);
+            //over all ads
+            userAds.put("ads_title", b2.getString("txtTitle"));
+            userAds.put("ads_description", b2.get("txtDescription"));
+            userAds.put("ads_type", b2.get("txtType"));
+            userAds.put("ads_id", adsId);
+            userAds.put("ads_img", b2.get("txtImage"));
+            userAds.put("ads_price", b2.get("txtPrice"));
+            userAds.put("ads_uid", userName);
+            userAds.put("ads_category", b2.getString("category"));
+
+        }else{
+            Toast.makeText(getContext(), "Error on bundle", Toast.LENGTH_SHORT).show();
         }
+        
+
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
         locationRequest = LocationRequest.create();
@@ -115,13 +147,40 @@ public class LastLocationFragment extends Fragment {
                 if (txtLocation != null || txtPhone != null ||
                         txtLocation.getText().toString() != "" ||
                         txtPhone.getText().toString() != "") {
-                    FragmentManager fm = getActivity().getSupportFragmentManager();
-                    SecTitleFragment tf = new SecTitleFragment();
-                    b.putString("txtPhone", txtPhone.getText().toString());
-                    b.putString("txtlocation", txtLocation.getText().toString());
-                    tf.setArguments(b);
-                    FragmentTransaction ft = fm.beginTransaction();
-                    ft.replace(R.id.main_frame, tf).commit();
+
+                    userAds.put("ads_location", txtLocation.getText().toString());
+                    userAds.put("ads_user_phone_no", txtPhone.getText().toString());
+                    db.collection("ads").document(adsId)
+                            .set(userAds)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error writing document", e);
+                                }
+                            });
+                    db.collection("users").document(userName).collection("user_ads").document(adsId)
+                            .set(inUserAds)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                                    Toast.makeText(getContext(), "Your ads is successfully added", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error writing document", e);
+                                    Toast.makeText(getContext(), "Error posting your ads ", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    getActivity().finish();
                 }
             }
         });

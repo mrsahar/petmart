@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnPausedListener;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.petshop.mart.R;
@@ -32,11 +35,23 @@ public class ThirdImageLoadingFragment extends Fragment {
     Uri uri;
     ImageView adsImg;
     Boolean isUploaded = false;
-    Bundle b = new Bundle();
+    Bundle b,b2 ;
+    String fileName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        b= new Bundle();
+        b2 = getArguments();
+        if(b2 != null){
+            b.putString("category",b2.getString("category"));
+            b.putString("txtType", b2.getString("txtType"));
+            b.putString("txtTitle", b2.getString("txtTitle"));
+            b.putString("txtDescription", b2.getString("txtDescription"));
+            b.putString("txtPrice", b2.getString("txtPrice"));
+        }else{
+            Toast.makeText(getContext(), "Error on bundle", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -44,18 +59,14 @@ public class ThirdImageLoadingFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_imageloading, container, false);
 
-        b = this.getArguments();
-        if(b != null){
 
-        }
         //fireStore
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
         // Database live and local
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         SharePreUserManage sharePreUserManage = new SharePreUserManage(getContext());
-        String adsId = db.collection("ads").document().getId();
+        String userName = sharePreUserManage.getUser().getUID();
         Button btnUploadAdsImage;
         adsImg = v.findViewById(R.id.ads_img);
         btnUploadAdsImage = v.findViewById(R.id.btn_upload_ads);
@@ -68,14 +79,16 @@ public class ThirdImageLoadingFragment extends Fragment {
 
         btnUploadAdsImage.setOnClickListener(v2 ->{
             if(isUploaded){
-                StorageReference imgPath = storageRef.child("image/");
+                StorageReference imgPath = storageRef.child("ads/"+userName+fileName);
                 imgPath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Toast.makeText(getContext(), "jan chuti", Toast.LENGTH_SHORT).show();
                         FragmentManager fm = getActivity().getSupportFragmentManager();
                         LastLocationFragment cf = new LastLocationFragment();
-                        b.putString("txtImage", taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+                        String imgPathS = imgPath.getDownloadUrl().toString();
+                        b.putString("txtImage",imgPathS );
+                        cf.setArguments(b);
                         FragmentTransaction ft = fm.beginTransaction();
                         ft.replace(R.id.main_frame,cf).commit();
                     }
@@ -83,6 +96,17 @@ public class ThirdImageLoadingFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(getContext(), "kafa shafa ni tivra", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        Log.d("kiki", "Upload is " + progress + "% done");
+                    }
+                }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+
                     }
                 });
 
@@ -100,6 +124,7 @@ public class ThirdImageLoadingFragment extends Fragment {
             isUploaded  = true;
             uri = data.getData();
             adsImg.setImageURI(uri);
+            fileName = data.getData().getPath().toLowerCase();
         } else {
             Toast.makeText(getContext(), "kafa shafa ni tivra", Toast.LENGTH_SHORT).show();
         }

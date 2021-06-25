@@ -11,9 +11,6 @@ import com.petshop.mart.activities.post.FirstCategoryFragment;
 
 public class AddActivity extends AppCompatActivity {
 
-
-    static Bundle b;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +22,6 @@ public class AddActivity extends AppCompatActivity {
 
         ft.add(R.id.main_frame,cf).commit();
 
-         b = new Bundle();
 
 
 //

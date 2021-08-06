@@ -50,7 +50,7 @@
             android:layout_below="@+id/txt_ads_description"
             android:hint="Price"
             android:background="@drawable/rounded_corner"
-            />
+            android:inputType="number" />
 
         <Button
             android:background="@drawable/round_corner_buttom"

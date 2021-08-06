@@ -1,6 +1,8 @@
 package com.petshop.mart.activities;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -19,9 +21,19 @@ public class AddActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         FirstCategoryFragment cf = new FirstCategoryFragment();
         FragmentTransaction ft = fm.beginTransaction();
+        ft.add(R.id.main_frame, cf).commit();
 
-        ft.add(R.id.main_frame,cf).commit();
+        ImageView backbutton=findViewById(R.id.toolbar_back);
 
+        backbutton.setOnClickListener(new View.OnClickListener() {
+                                          @Override
+                                          public void onClick(View v) {
+
+                                              onBackPressed();
+
+                                          }
+                                      }
+        );
 
 
 //

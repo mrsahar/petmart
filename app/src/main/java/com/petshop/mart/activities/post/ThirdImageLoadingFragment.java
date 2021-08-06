@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,7 +39,8 @@ public class ThirdImageLoadingFragment extends Fragment {
     Boolean isUploaded = false;
     Bundle b,b2 ;
     String fileName;
-
+    //ProgressBar bar;
+   RelativeLayout progressbar;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +62,8 @@ public class ThirdImageLoadingFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_imageloading, container, false);
 
+      progressbar=v.findViewById(R.id.progress_background);
+      progressbar.setVisibility(View.GONE);
 
         //fireStore
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -78,12 +83,16 @@ public class ThirdImageLoadingFragment extends Fragment {
         });
 
         btnUploadAdsImage.setOnClickListener(v2 ->{
+
             if(isUploaded){
+                btnUploadAdsImage.setEnabled(false);
+                progressbar.setVisibility(View.VISIBLE);
+
                 StorageReference imgPath = storageRef.child("ads/"+userName+fileName);
                 imgPath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(getContext(), "jan chuti", Toast.LENGTH_SHORT).show();
+                      //  Toast.makeText(getContext(), "image uploaded successfully!", Toast.LENGTH_SHORT).show();
                         FragmentManager fm = getActivity().getSupportFragmentManager();
                         LastLocationFragment cf = new LastLocationFragment();
                         String imgPathS = imgPath.getDownloadUrl().toString();
@@ -100,6 +109,7 @@ public class ThirdImageLoadingFragment extends Fragment {
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                      //  bar.setVisibility(View.VISIBLE);
                         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                         Log.d("kiki", "Upload is " + progress + "% done");
                     }

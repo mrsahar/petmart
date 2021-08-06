@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,18 +37,20 @@ public class SecTitleFragment extends Fragment {
     ArrayList<String> categoryData;
     ArrayAdapter<String> spinnerAdapter;
     Bundle b;
+  //  int minPrice = 50;
+    //int price ;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments().getString("category") != null){
+        if (getArguments().getString("category") != null) {
             typeCategory = getArguments().getString("category");
-        }else{
+        } else {
             Toast.makeText(getContext(), "Please Select Category", Toast.LENGTH_SHORT).show();
             FragmentManager fm = getActivity().getSupportFragmentManager();
             FirstCategoryFragment cf = new FirstCategoryFragment();
             FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.main_frame,cf).commit();
+            ft.replace(R.id.main_frame, cf).commit();
             typeCategory = "fish";
         }
         categoryData = new ArrayList<>();
@@ -57,23 +60,22 @@ public class SecTitleFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
 
 
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v =  inflater.inflate(R.layout.fragment_title, container, false);
+        View v = inflater.inflate(R.layout.fragment_title, container, false);
 
         b = this.getArguments();
-        if(b != null){
+        if (b != null) {
 
         }
         Spinner spinner = v.findViewById(R.id.spinner_type_category);
-        TextView txtTitle = v.findViewById(R.id.txt_ads_title);
-        TextView txtDescription = v.findViewById(R.id.txt_ads_description);
-        TextView txtPrice = v.findViewById(R.id.txt_ads_price);
+        EditText txtTitle = v.findViewById(R.id.txt_ads_title);
+        EditText txtDescription = v.findViewById(R.id.txt_ads_description);
+        EditText txtPrice = v.findViewById(R.id.txt_ads_price);
 
         Log.d(TAG, "onCreateView: Running");
         DocumentReference docRef = db.collection("category").document(typeCategory);
@@ -83,10 +85,10 @@ public class SecTitleFragment extends Fragment {
             for (Object key : keys) {
                 categoryData.add(s.get(key).toString());
             }
-            if(categoryData != null || categoryData.size() != 0){
-                spinnerAdapter= new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, categoryData);
+            if (categoryData != null || categoryData.size() != 0) {
+                spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, categoryData);
                 spinner.setAdapter(spinnerAdapter);
-            }else{
+            } else {
                 Toast.makeText(getContext(), "Please Select Category", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onCreateView: not running");
             }
@@ -98,15 +100,30 @@ public class SecTitleFragment extends Fragment {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                ThirdImageLoadingFragment cf = new ThirdImageLoadingFragment();
-                b.putString("txtType", spinner.getSelectedItem().toString());
-                b.putString("txtTitle", txtTitle.getText().toString());
-                b.putString("txtDescription", txtDescription.getText().toString());
-                b.putString("txtPrice", txtPrice.getText().toString());
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.main_frame,cf).commit();
+
+                if (txtTitle.getText().toString().length() < 5) {
+                    txtTitle.setError("A minimum length of 5 character is required.");
+                    return;
+                }else if(txtDescription.getText().toString().length()<20){
+                    txtDescription.setError("A minimum length of 20 character is required.");
+                    return;
+                } if (txtPrice.getText().toString().isEmpty() ){
+                    txtPrice.setError("Value should be atleast 50.");
+                    return;
+                }
+                else {
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    ThirdImageLoadingFragment cf = new ThirdImageLoadingFragment();
+                    b.putString("txtType", spinner.getSelectedItem().toString());
+                    b.putString("txtTitle", txtTitle.getText().toString());
+                    b.putString("txtPrice",txtPrice.getText().toString());
+                    b.putString("txtDescription", txtDescription.getText().toString());
+                    FragmentTransaction ft = fm.beginTransaction();
+                    cf.setArguments(b);
+                    ft.replace(R.id.main_frame, cf).commit();
+                }
             }
+
         });
 
 

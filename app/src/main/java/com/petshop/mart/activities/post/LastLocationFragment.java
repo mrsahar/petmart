@@ -21,6 +21,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +44,9 @@ import com.petshop.mart.R;
 import com.petshop.mart.localdata.SharePreUserManage;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -49,6 +54,11 @@ import java.util.Map;
 
 
 public class LastLocationFragment extends Fragment {
+
+    Button post;
+    EditText phone_No;
+    EditText location;
+    String phonepattern = "^[+][0-9]{10,13}$";
 
     private static final String TAG = "kiki";
     //Location in english
@@ -61,6 +71,8 @@ public class LastLocationFragment extends Fragment {
     LocationRequest locationRequest;
     String userName;
     Bundle b2;
+
+
 
     LocationCallback locationCallback = new LocationCallback() {
         @Override
@@ -100,6 +112,17 @@ public class LastLocationFragment extends Fragment {
         userName = sharePreUserManage.getUser().getUID();
         String adsId = db.collection("ads").document().getId();
 
+//        Date date = new Date();
+//        DateFormat dateFormat = (DateFormat) android.text.format.DateFormat.format("dd-mm-yyyy hh:mm:ss a", new Date());
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.US);
+
+        String time = df.format(new Date());
+
+        phone_No= v.findViewById(R.id.txt_ads_phone);
+        location=v.findViewById(R.id.txt_ads_Location);
+        post=v.findViewById(R.id.post_ads);
+
 
         if(b2 != null){
 
@@ -130,26 +153,32 @@ public class LastLocationFragment extends Fragment {
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         checkSettingsAndStartLocationUpdates();
         ImageButton imgBtnLocation = v.findViewById(R.id.search_location);
-        TextView txtLocation = v.findViewById(R.id.txt_ads_Location);
         geocoder = new Geocoder(getContext(), Locale.getDefault());
 
         imgBtnLocation.setOnClickListener(v1 -> {
             address = addresses.get(0).getAddressLine(0);
-            txtLocation.setText(address);
+            location.setText(address);
         });
 
-        TextView txtPhone = v.findViewById(R.id.txt_ads_phone);
-        TextView btnNext3 = v.findViewById(R.id.next_3);
 
-        btnNext3.setOnClickListener(new View.OnClickListener() {
+
+        post.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                if (txtLocation != null || txtPhone != null ||
-                        txtLocation.getText().toString() != "" ||
-                        txtPhone.getText().toString() != "") {
+                String phone= phone_No.getText().toString();
 
-                    userAds.put("ads_location", txtLocation.getText().toString());
-                    userAds.put("ads_user_phone_no", txtPhone.getText().toString());
+               if( !phone.matches(phonepattern)){
+                    phone_No.setError("Please enter valid phone number (+92..)!");
+                    return;
+                } if(location.getText().toString().isEmpty()){
+                    location.setError("Loaction can't be empty!");
+                  return;
+                }
+                else{
+                    userAds.put("ads_location", location.getText().toString());
+                    userAds.put("ads_user_phone_no", phone_No.getText().toString());
+                    userAds.put("ads_date", time);
                     db.collection("ads").document(adsId)
                             .set(userAds)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -180,7 +209,7 @@ public class LastLocationFragment extends Fragment {
                                     Toast.makeText(getContext(), "Error posting your ads ", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                    getActivity().finish();
+
                 }
             }
         });

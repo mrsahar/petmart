@@ -161,7 +161,6 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-
     private void sendMessage(String sender, String receiver, String message){
         DatabaseReference reference = FirebaseDatabase.getInstance("https://pet-mart-19e46-default-rtdb.asia-southeast1.firebasedatabase.app")
                 .getReference();

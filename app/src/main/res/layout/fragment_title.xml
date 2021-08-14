@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.post.SecTitleFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:layout_margin="5dp"
+            android:id="@+id/spinner_type_category"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/custom_spinner"
+            />
+
+
+        <EditText
+
+            android:padding="15dp"
+            android:background="@drawable/rounded_corner"
+            android:layout_margin="15dp"
+            android:layout_below="@+id/spinner_type_category"
+            android:id="@+id/txt_ads_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/title" />
+
+        <EditText
+            android:padding="15dp"
+            android:background="@drawable/rounded_corner"
+            android:layout_margin="15dp"
+            android:id="@+id/txt_ads_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_ads_title"
+            android:hint="Description" />
+
+        <EditText
+            android:padding="15dp"
+            android:layout_margin="15dp"
+            android:id="@+id/txt_ads_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_ads_description"
+            android:hint="Price"
+            android:background="@drawable/rounded_corner"
+            android:inputType="number" />
+
+        <Button
+            android:background="@drawable/round_corner_buttom"
+            android:layout_margin="15dp"
+            android:id="@+id/sectitle_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="@string/next" />
+    </RelativeLayout>
+
+</FrameLayout>

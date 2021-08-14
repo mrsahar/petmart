@@ -1,0 +1,82 @@
+<resources>
+    <string name="app_name">Pet Mart</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="username">USERNAME</string>
+    <string name="password">PASSWORD</string>
+    <string name="email">Email</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">Home</string>
+    <string name="chat">Chat</string>
+    <string name="add">Add</string>
+    <string name="vet">Vet</string>
+    <string name="profile">Profile</string>
+    <string name="top_icon">home icon</string>
+    <string name="already_have_an_account">Already Have an Account?</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">forget Password!</string>
+    <string name="or">or</string>
+    <string name="google_icon">Google Login</string>
+    <string name="facebook_icon">facebook login</string>
+    <string name="new_user_register_now">new user! register now</string>
+    <string name="already_have_account">Already have Account?</string>
+    <string name="signup">Signup</string>
+    <string name="petmart_registration">PetMart Registration</string>
+    <string name="title">Title</string>
+    <string name="description">description</string>
+    <string name="price">price</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="upload">Upload</string>
+    <string name="phone_no">Phone No</string>
+    <string name="location">Location</string>
+    <string name="post_your_ad">Post Your Ad</string>
+    <string name="animal">Animals</string>
+    <string name="Fish">fish</string>
+    <string name="Birds">birds</string>
+    <string name="category">Category</string>
+    <string name="cat">Cats</string>
+    <string name="dog">Dogs</string>
+    <string name="rabbit">Rabbits</string>
+    <string name="goat">Goats</string>
+    <string name="cow">Cows</string>
+    <string name="sheep">Sheeps</string>
+    <string name="horse">Horse</string>
+    <string name="monkey">Monkey</string>
+    <string name="deer">Deers</string>
+    <string name="monkeys">Monkeys</string>
+    <string name="camel">Camels</string>
+
+    <string name="email_id">Email-id</string>
+    <string name="newaccount">Create a new account</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">register</string>
+    <string name="firstcap_login">Login</string>
+    <string name="btn_register">Register</string>
+    <string name="show_password">Show Password</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="dummy_text">dummy_Text</string>
+
+    <string name="type_a_message">Type a message</string>
+    <string name="forget_password">Forget Password ?</string>
+    <string name="mr0kaushik">©mr0kaushik</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="clicking">You will get an email on clicking the RESET button.</string>
+    <string name="reset">Reset</string>
+    <string name="enter_your_e_mail_id">Enter Your E-Mail id</string>
+    <string name="search_user">Search user...</string>
+    <string name="last_name">Last Name</string>
+    <string name="first_name">First Name</string>
+    <string name="chatting_app">Chatting App</string>
+    <string name="name">Name</string>
+    <string name="about">About</string>
+</resources>

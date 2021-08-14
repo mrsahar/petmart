@@ -113,7 +113,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private void checkLastMessage(final String userId, final TextView tv_user_about_or_last_message){
         lastMessage = "";
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
+        DatabaseReference reference = FirebaseDatabase.getInstance("https://pet-mart-19e46-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("Chats");
         assert firebaseUser != null;
         reference.addValueEventListener(new ValueEventListener() {
             @Override
